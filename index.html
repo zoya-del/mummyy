@@ -1,0 +1,648 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For My Dearest Mommy 🧿 ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:ital,wght@0,400;0,600;0,700;1,400&family=Poppins:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+        :root {
+            --pink:       #f72585;
+            --rose:       #b5179e;
+            --soft:       #fff0f7;
+            --deep:       #4a0e4e;
+            --gold:       #ffe66d;
+            --blush:      #ffd6e0;
+            --glow:       rgba(247, 37, 133, 0.4);
+            --white:      #ffffff;
+        }
+
+        body {
+            min-height: 100vh;
+            font-family: 'Poppins', sans-serif;
+            background: linear-gradient(135deg, #ffccd5 0%, #fff0f5 45%, #ffe5ec 70%, #ffeedb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow-x: hidden;
+            overflow-y: auto;
+            position: relative;
+            padding: 15px 10px;
+        }
+
+        #particle-canvas, #confetti-canvas {
+            position: fixed;
+            top: 0; left: 0;
+            width: 100%; height: 100%;
+            pointer-events: none;
+        }
+        #particle-canvas { z-index: 0; }
+        #confetti-canvas { z-index: 100; display: none; }
+
+        /* FLOATING HEART PHOTOS */
+        .floating-photos-container {
+            position: fixed;
+            inset: 0;
+            pointer-events: none;
+            z-index: 1;
+            overflow: hidden;
+        }
+
+        .floating-heart-item {
+            position: absolute;
+            pointer-events: auto;
+            cursor: pointer;
+            filter: drop-shadow(0 10px 22px rgba(247, 37, 133, 0.35));
+            transition: transform 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            animation: floatHeartBob 6s ease-in-out infinite alternate;
+        }
+        .floating-heart-item:hover {
+            transform: scale(1.18) rotate(3deg) !important;
+            filter: drop-shadow(0 14px 28px rgba(247, 37, 133, 0.55));
+        }
+
+        .floating-heart-item svg {
+            width: 82px;
+            height: 82px;
+            display: block;
+        }
+
+        .fh-1 { top: 8%;  left: 4%;  animation-delay: 0s;   animation-duration: 5.5s; }
+        .fh-2 { top: 62%; left: 5%;  animation-delay: 1.2s; animation-duration: 6.8s; }
+        .fh-3 { top: 12%; right: 4%; animation-delay: 0.7s; animation-duration: 6.2s; }
+        .fh-4 { top: 68%; right: 5%; animation-delay: 2.1s; animation-duration: 5.8s; }
+        .fh-5 { top: 84%; left: 45%; animation-delay: 1.5s; animation-duration: 7.2s; }
+
+        @keyframes floatHeartBob {
+            0%   { transform: translateY(0px) rotate(-3deg); }
+            50%  { transform: translateY(-16px) rotate(4deg); }
+            100% { transform: translateY(4px) rotate(-2deg); }
+        }
+
+        .wrapper {
+            position: relative;
+            z-index: 10;
+            width: 100%;
+            max-width: 480px;
+            margin: auto;
+        }
+
+        .progress-dots {
+            display: none;
+            justify-content: center;
+            align-items: center;
+            gap: 9px;
+            margin-bottom: 18px;
+        }
+        .progress-dots.visible { display: flex; }
+        .dot {
+            width: 8px; height: 8px;
+            border-radius: 50%;
+            background: rgba(247, 37, 133, 0.28);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        .dot.active {
+            background: var(--pink);
+            width: 26px;
+            border-radius: 8px;
+            box-shadow: 0 0 12px rgba(247, 37, 133, 0.6);
+        }
+
+        .page {
+            background: rgba(255, 255, 255, 0.82);
+            backdrop-filter: blur(28px) saturate(190%);
+            -webkit-backdrop-filter: blur(28px) saturate(190%);
+            border-radius: 36px;
+            border: 1.8px solid rgba(255, 255, 255, 0.95);
+            box-shadow:
+                0 20px 50px rgba(216, 17, 89, 0.14),
+                0 4px 12px rgba(0, 0, 0, 0.03),
+                inset 0 1px 0 rgba(255, 255, 255, 1);
+            padding: 40px 30px 34px;
+            text-align: center;
+            display: none;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .page::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 4px;
+            background: linear-gradient(90deg, #ffe66d, #f72585, #b5179e, #7209b7, #ffe66d);
+            background-size: 300% 100%;
+            animation: shimmerTop 4s linear infinite;
+            border-radius: 36px 36px 0 0;
+        }
+        @keyframes shimmerTop {
+            0%   { background-position: 0% 0%; }
+            100% { background-position: 300% 0%; }
+        }
+
+        .page.active-page { display: block; }
+        .page.slide-in-right { animation: slideInR 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .page.slide-in-left  { animation: slideInL 0.45s cubic-bezier(0.22, 1, 0.36, 1) forwards; }
+        .page.slide-out-left { animation: slideOutL 0.35s ease-in forwards; }
+        .page.slide-out-right{ animation: slideOutR 0.35s ease-in forwards; }
+
+        @keyframes slideInR { from { opacity: 0; transform: translateX(50px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes slideInL { from { opacity: 0; transform: translateX(-50px) scale(0.96); } to { opacity: 1; transform: translateX(0) scale(1); } }
+        @keyframes slideOutL { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(-50px); } }
+        @keyframes slideOutR { from { opacity: 1; transform: translateX(0); } to { opacity: 0; transform: translateX(50px); } }
+
+        .floating-icon {
+            font-size: 48px;
+            display: inline-block;
+            margin-bottom: 12px;
+            animation: floatIcon 2.6s ease-in-out infinite;
+            filter: drop-shadow(0 6px 14px rgba(247, 37, 133, 0.3));
+        }
+        @keyframes floatIcon {
+            0%, 100% { transform: translateY(0) scale(1); }
+            50%      { transform: translateY(-10px) scale(1.08); }
+        }
+
+        h1, h2 {
+            font-family: 'Playfair Display', serif;
+            color: var(--rose);
+            font-size: 25px;
+            font-weight: 700;
+            margin-bottom: 12px;
+            line-height: 1.3;
+        }
+
+        .subtitle {
+            color: #5f1b5e;
+            font-size: 14px;
+            line-height: 1.7;
+            font-weight: 400;
+            margin-bottom: 18px;
+        }
+
+        .badge {
+            display: inline-block;
+            background: linear-gradient(135deg, #ffe66d, #ffb347);
+            color: #6a3400;
+            font-size: 11px;
+            font-weight: 700;
+            letter-spacing: 1.4px;
+            text-transform: uppercase;
+            padding: 4px 14px;
+            border-radius: 50px;
+            margin-bottom: 12px;
+            box-shadow: 0 4px 12px rgba(255, 179, 71, 0.35);
+        }
+
+        .input-wrap {
+            position: relative;
+            display: inline-block;
+            width: 78%;
+            margin-bottom: 18px;
+        }
+        .input-wrap input {
+            width: 100%;
+            padding: 15px 15px 15px 44px;
+            font-size: 26px;
+            border: 2px solid rgba(247, 37, 133, 0.3);
+            border-radius: 22px;
+            text-align: center;
+            outline: none;
+            letter-spacing: 10px;
+            background: rgba(255, 255, 255, 0.95);
+            box-shadow: 0 6px 20px rgba(247, 37, 133, 0.1);
+            font-family: 'Poppins', sans-serif;
+            color: var(--deep);
+            transition: all 0.3s ease;
+        }
+        .input-wrap input:focus {
+            border-color: var(--pink);
+            box-shadow: 0 0 0 4px rgba(247, 37, 133, 0.18);
+        }
+        .input-wrap .lock-icon {
+            position: absolute;
+            left: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            font-size: 18px;
+            opacity: 0.6;
+        }
+
+        .lock-hint {
+            font-size: 12px;
+            color: rgba(74, 14, 78, 0.55);
+            margin-bottom: 16px;
+        }
+
+        .error-msg {
+            color: #e63946;
+            font-size: 13px;
+            min-height: 18px;
+            margin-bottom: 12px;
+            font-weight: 500;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 10px;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin-top: 14px;
+        }
+
+        button {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 600;
+            font-size: 14px;
+            border: none;
+            cursor: pointer;
+            border-radius: 50px;
+            padding: 12px 28px;
+            transition: all 0.28s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+        button:hover { transform: translateY(-3px) scale(1.03); }
+        button:active { transform: translateY(0) scale(0.97); }
+
+        .btn-primary {
+            background: linear-gradient(135deg, var(--pink) 0%, var(--rose) 100%);
+            color: white;
+            box-shadow: 0 8px 24px rgba(247, 37, 133, 0.4);
+        }
+        .btn-back {
+            background: linear-gradient(135deg, #e9ecef 0%, #dee2e6 100%);
+            color: #495057;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.06);
+        }
+        .btn-unlock {
+            background: linear-gradient(135deg, #ffe66d 0%, #ff9e00 100%);
+            color: #5e2c00;
+            font-size: 15px;
+            padding: 14px 34px;
+            box-shadow: 0 8px 25px rgba(255, 170, 0, 0.4);
+        }
+
+        /* MUSIC BOX UI */
+        .music-box-card {
+            background: linear-gradient(145deg, #fff5f8 0%, #ffe9f2 100%);
+            border: 1.5px solid rgba(247, 37, 133, 0.25);
+            border-radius: 24px;
+            padding: 18px 16px;
+            margin: 16px 0;
+            box-shadow: 0 8px 24px rgba(247, 37, 133, 0.08);
+            position: relative;
+        }
+
+        .music-vinyl-header {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            margin-bottom: 14px;
+        }
+
+        .vinyl-disc {
+            width: 44px;
+            height: 44px;
+            border-radius: 50%;
+            background: radial-gradient(circle, #2b2b2b 25%, #111 60%, #444 85%, #222 100%);
+            border: 2px solid #f72585;
+            box-shadow: 0 4px 14px rgba(0, 0, 0, 0.25);
+            animation: spinVinyl 5s linear infinite;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        .vinyl-center {
+            width: 14px;
+            height: 14px;
+            border-radius: 50%;
+            background: #ffe66d;
+            border: 2px solid white;
+        }
+        @keyframes spinVinyl { 100% { transform: rotate(360deg); } }
+
+        .music-info { text-align: left; }
+        .music-title { font-size: 14px; font-weight: 700; color: var(--rose); }
+        .music-artist { font-size: 12px; color: #7a3a7a; }
+
+        .spotify-frame-wrap {
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 6px 18px rgba(0, 0, 0, 0.08);
+        }
+
+        /* LETTER BOX */
+        .letter-box {
+            background: linear-gradient(135deg, rgba(255, 240, 247, 0.95), rgba(255, 226, 238, 0.85));
+            border: 1.5px dashed rgba(247, 37, 133, 0.45);
+            border-radius: 24px;
+            padding: 22px;
+            text-align: left;
+            margin: 16px 0;
+            max-height: 240px;
+            overflow-y: auto;
+            box-shadow: inset 0 2px 10px rgba(247, 37, 133, 0.05);
+            scrollbar-width: thin;
+            scrollbar-color: rgba(247, 37, 133, 0.35) transparent;
+        }
+        .letter-box p {
+            font-style: italic;
+            color: #3f0338;
+            font-size: 14px;
+            line-height: 1.85;
+        }
+        .open-when-section { margin-bottom: 16px; }
+        .open-when-title {
+            font-style: normal;
+            font-weight: 700;
+            color: var(--rose);
+            font-size: 13px;
+            margin-bottom: 4px;
+            display: block;
+        }
+
+        /* REASONS LIST */
+        .reasons-list {
+            list-style: none;
+            padding: 0;
+            text-align: left;
+            margin: 16px 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            max-height: 240px;
+            overflow-y: auto;
+            scrollbar-width: thin;
+            scrollbar-color: rgba(247, 37, 133, 0.35) transparent;
+        }
+        .reasons-list li {
+            background: linear-gradient(135deg, rgba(255, 240, 247, 0.95), rgba(255, 226, 238, 0.8));
+            border-left: 3.5px solid var(--pink);
+            border-radius: 14px;
+            padding: 11px 14px;
+            font-size: 13.5px;
+            color: #3f0338;
+            font-weight: 500;
+            line-height: 1.5;
+            display: flex;
+            gap: 10px;
+            align-items: flex-start;
+        }
+        .reasons-list li .num {
+            background: var(--pink);
+            color: white;
+            border-radius: 50%;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            font-weight: 700;
+            margin-top: 1px;
+        }
+
+        /* POLAROID GALLERY */
+        .gallery-wrap { margin: 14px 0 10px; }
+        .polaroid-deck {
+            background: white;
+            border-radius: 22px;
+            padding: 14px 14px 18px;
+            box-shadow: 0 18px 45px rgba(0, 0, 0, 0.12), 0 4px 12px rgba(247, 37, 133, 0.1);
+            position: relative;
+            transform: rotate(-1.5deg);
+            transition: transform 0.4s ease;
+        }
+        .polaroid-deck:hover { transform: rotate(0deg) scale(1.02); }
+        .polaroid-img-box {
+            position: relative;
+            width: 100%;
+            height: 230px;
+            border-radius: 14px;
+            overflow: hidden;
+            background: #ffe3ec;
+        }
+        .polaroid-img-box img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            transition: opacity 0.35s ease, transform 0.4s ease;
+        }
+        .polaroid-img-box .photo-badge {
+            position: absolute;
+            bottom: 10px;
+            right: 10px;
+            background: rgba(0, 0, 0, 0.55);
+            backdrop-filter: blur(8px);
+            color: white;
+            font-size: 11px;
+            padding: 3px 10px;
+            border-radius: 20px;
+            font-weight: 600;
+        }
+        .polaroid-caption {
+            margin-top: 12px;
+            font-size: 13.5px;
+            color: #6b0559;
+            font-style: italic;
+            line-height: 1.6;
+            min-height: 42px;
+        }
+
+        .photo-thumbs {
+            display: flex;
+            justify-content: center;
+            gap: 8px;
+            margin-top: 12px;
+        }
+        .thumb-btn {
+            width: 44px;
+            height: 44px;
+            padding: 0;
+            border-radius: 12px;
+            border: 2px solid transparent;
+            overflow: hidden;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+            transition: all 0.25s ease;
+        }
+        .thumb-btn.active {
+            border-color: var(--pink);
+            transform: scale(1.12);
+            box-shadow: 0 0 12px rgba(247, 37, 133, 0.6);
+        }
+        .thumb-btn img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+        }
+
+        /* TAP HEARTBURST */
+        .tap-heart {
+            position: fixed;
+            pointer-events: none;
+            font-size: 20px;
+            z-index: 9999;
+            animation: heartBurst 0.9s ease-out forwards;
+        }
+        @keyframes heartBurst {
+            0%   { opacity: 1; transform: translate(-50%, -50%) scale(0.6); }
+            50%  { opacity: 0.9; transform: translate(calc(-50% + var(--tx)), calc(-50% + var(--ty))) scale(1.3); }
+            100% { opacity: 0; transform: translate(calc(-50% + var(--tx) * 1.5), calc(-50% + var(--ty) * 1.8)) scale(0.8); }
+        }
+
+        .scroll-hint {
+            font-size: 11px;
+            color: rgba(74, 14, 78, 0.45);
+            text-align: right;
+            margin-top: 2px;
+            margin-bottom: -4px;
+        }
+
+        @media (max-width: 600px) {
+            .floating-heart-item svg { width: 64px; height: 64px; }
+            .fh-1 { top: 3%; left: 2%; }
+            .fh-2 { top: 78%; left: 3%; }
+            .fh-3 { top: 4%; right: 2%; }
+            .fh-4 { top: 80%; right: 3%; }
+            .fh-5 { display: none; }
+            .page { padding: 32px 20px 26px; border-radius: 28px; }
+            h1, h2 { font-size: 22px; }
+            .polaroid-img-box { height: 210px; }
+        }
+    </style>
+</head>
+<body>
+
+<svg width="0" height="0" style="position:absolute;">
+  <defs>
+    <clipPath id="heartClip" clipPathUnits="objectBoundingBox">
+      <path d="M 0.5, 0.22 C 0.4, 0.03, 0.05, 0.08, 0.05, 0.42 C 0.05, 0.68, 0.45, 0.88, 0.5, 0.96 C 0.55, 0.88, 0.95, 0.68, 0.95, 0.42 C 0.95, 0.08, 0.6, 0.03, 0.5, 0.22 Z" />
+    </clipPath>
+  </defs>
+</svg>
+
+<canvas id="particle-canvas"></canvas>
+<canvas id="confetti-canvas"></canvas>
+
+<!-- FLOATING HEART PHOTOS -->
+<div class="floating-photos-container">
+    <div class="floating-heart-item fh-1" title="Memory 1" onclick="popHeart(event)">
+        <svg viewBox="0 0 100 100">
+            <image href="photo1.jpg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+            <path d="M 50,22 C 40,3 5,8 5,42 C 5,68 45,88 50,96 C 55,88 95,68 95,42 C 95,8 60,3 50,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" />
+        </svg>
+    </div>
+
+    <div class="floating-heart-item fh-2" title="Memory 2" onclick="popHeart(event)">
+        <svg viewBox="0 0 100 100">
+            <image href="photo2.jpg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+            <path d="M 50,22 C 40,3 5,8 5,42 C 5,68 45,88 50,96 C 55,88 95,68 95,42 C 95,8 60,3 50,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" />
+        </svg>
+    </div>
+
+    <div class="floating-heart-item fh-3" title="Memory 3" onclick="popHeart(event)">
+        <svg viewBox="0 0 100 100">
+            <image href="photo3.jpg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+            <path d="M 50,22 C 40,3 5,8 5,42 C 5,68 45,88 50,96 C 55,88 95,68 95,42 C 95,8 60,3 50,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" />
+        </svg>
+    </div>
+
+    <div class="floating-heart-item fh-4" title="Memory 4" onclick="popHeart(event)">
+        <svg viewBox="0 0 100 100">
+            <image href="photo4.jpg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+            <path d="M 50,22 C 40,3 5,8 5,42 C 5,68 45,88 50,96 C 55,88 95,68 95,42 C 95,8 60,3 50,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" />
+        </svg>
+    </div>
+
+    <div class="floating-heart-item fh-5" title="Memory 5" onclick="popHeart(event)">
+        <svg viewBox="0 0 100 100">
+            <image href="photo5.jpg" width="100" height="100" preserveAspectRatio="xMidYMid slice" clip-path="url(#heartClip)" />
+            <path d="M 50,22 C 40,3 5,8 5,42 C 5,68 45,88 50,96 C 55,88 95,68 95,42 C 95,8 60,3 50,22 Z" fill="none" stroke="rgba(255,255,255,0.9)" stroke-width="3.5" />
+        </svg>
+    </div>
+</div>
+
+<div class="wrapper">
+    <!-- Progress Indicator Dots -->
+    <div class="progress-dots" id="progress-dots">
+        <div class="dot" id="dot-2"></div>
+        <div class="dot" id="dot-3"></div>
+        <div class="dot" id="dot-4"></div>
+        <div class="dot" id="dot-5"></div>
+        <div class="dot" id="dot-6"></div>
+        <div class="dot" id="dot-7"></div>
+    </div>
+
+    <!-- PAGE 1: Lock Screen -->
+    <div class="page active-page" id="page-1">
+        <div class="floating-icon">🔐</div>
+        <h2>Enter Our Secret Code</h2>
+        <p class="subtitle">Type our special password to unlock your experience ✨</p>
+
+        <div class="input-wrap">
+            <span class="lock-icon">🔒</span>
+            <input type="password" id="passcode" maxlength="4" placeholder="••••"
+                   oninput="autoCheck()" onkeydown="if(event.key==='Enter') checkCode()">
+        </div>
+        <p class="lock-hint">4-digit secret 🤫</p>
+        <div class="error-msg" id="error-msg"></div>
+
+        <div class="btn-group">
+            <button class="btn-unlock" onclick="checkCode()">Unlock ✨</button>
+        </div>
+    </div>
+
+    <!-- PAGE 2: Welcome -->
+    <div class="page" id="page-2">
+        <div class="badge">✦ Special Journey ✦</div>
+        <div class="floating-icon">🌸</div>
+        <h1>You Unlocked It! 🌈</h1>
+        <p class="subtitle">Ennoda mummy kaaga indha special journey... 💖</p>
+        <div class="btn-group">
+            <button class="btn-primary" onclick="changePage(3, 'forward')">Next ➺</button>
+        </div>
+    </div>
+
+    <!-- PAGE 3: Spotify Music Box -->
+    <div class="page" id="page-3">
+        <div class="floating-icon">🎵</div>
+        <h2>Music Box</h2>
+        <p class="subtitle">Oru chinna music box... Intha paatu unakaga, Mommy 🎶</p>
+
+        <div class="music-box-card">
+            <div class="music-vinyl-header">
+                <div class="vinyl-disc">
+                    <div class="vinyl-center"></div>
+                </div>
+                <div class="music-info">
+                    <div class="music-title">Kannamma 🌸</div>
+                    <div class="music-artist">Sam C.S. • Anirudh Ravichander</div>
+                </div>
+            </div>
+
+            <div class="spotify-frame-wrap">
+                <iframe style="border-radius:14px; border:none; display:block;"
+                    src="https://open.spotify.com/embed/track/6gYhbcXroSeoBAG0spjl7M?utm_source=generator&theme=0"
+                    width="100%" height="152"
+                    allowfullscreen=""
+                    allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+                    loading="lazy">
+                </iframe>
+            </div>
+        </div>
+
+        <div class="btn-group">
+            <button class="btn-back" onclick="changePage(2, 'back')">↩ Back</button>
+            <button class="btn-primary" onclick="changePage(4, 'forward')">Next ➺</button>
+        </div>
+    </div>
+
+    <!-- PAGE 4: Heartfelt Letter -->
+    <div class="page" id="page-4">
+        <div class="floating-icon">💌
